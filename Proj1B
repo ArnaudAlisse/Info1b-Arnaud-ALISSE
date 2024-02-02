@@ -32,7 +32,7 @@ void fill_map(Map* map)
 		}
 	}
 	
-	map->map[map->size*(map->size-1)]=a;
+	map->map[map->size* (map->size - 1)]=a;
 	map->map[map->size]=b;
 }
 
@@ -50,36 +50,42 @@ Color get_map_value (Map* map, int x, int y)
 
 void affiche_map(Map* map)
 {
-	for (int i=0; i < map->size; i=i+1)
+	for (int i=0; i <= map->size; i=i+1)
 	{
-		for (int j=0; j< map->size; j=j+1)
+		for (int j=0; j <= map->size; j=j+1)
 		{
+			if (get_map_value(map, i,j) == 1){
+			printf ("\033[150;01m1\033[00m");
+			}
+			if (get_map_value(map, i,j) == 2){
+			printf ("\033[120;01m2\033[00m");
+			}
 			if (get_map_value(map, i,j) == 3){
-			printf("R");
+			printf ("\033[31;01mR\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 4){
-			printf("G");
+			printf("\033[32;01mG\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 5){
-			printf("B");
+			printf("\033[34;01mB\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 6){
-			printf("Y");
+			printf("\033[33;01mY\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 7){
-			printf("M");
+			printf("\033[35;01mM\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 8){
-			printf("C");
+			printf("\033[96;01mC\033[00m");
 			}
 			
 			if (get_map_value(map, i,j) == 9){
-			printf("W");
+			printf("\033[97;01mW\033[00m");
 			}
 		}
 		
@@ -96,6 +102,12 @@ int main(int argc, char** argv)
 	affiche_map(&map);
 	
 }
+
+
+
+
+
+
 
 
 
