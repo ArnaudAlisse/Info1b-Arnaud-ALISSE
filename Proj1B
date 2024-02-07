@@ -93,8 +93,95 @@ void affiche_map(Map* map)
 	}
 }
 
+//QUESTION 3
 
+void joue_un_coup(Map * map)
+{
+	Char A;
+	Chat coup_joue;
+	int B;
+	int numero_joueur;
+	int m=0;
+	int k=0;
+	printf("Quel joueur êtes vous ?")
+	B = scanf("%d",&numero_joueur)
 
+	printf("Quel coup voulez vous jouer ?")
+	A=scanf("%c",&coup_joue)
+	
+	while (m == 0)
+	{
+		while (k == 0)
+		{
+			for (int i = 0; i <= map->size;i=i+1)
+			{
+				for (int j = 0; j<= map->size; j=j+1)
+				{
+					if B==1
+					{
+		
+						if (get_map_value(map,i,j) == 1)
+						{
+							if (get_map_value(map,i,j-1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i,j-1, 1);
+								k=1;
+							}	
+							if (get_map_value(map,i,j+1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i,j+1, 1);
+								k=1;
+							}
+							if (get_map_value(map,i-1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i-1,j, 1);
+								k=1;
+							}
+							if (get_map_value(map,i+1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i+1,j, 1);
+								k=1;
+							}
+						
+						}
+					}
+		
+					if B==2
+					{
+		
+						if (get_map_value(map,i,j) == 2)
+						{
+							if (get_map_value(map,i,j-1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i,j-1, 2);
+							}	
+							if (get_map_value(map,i,j+1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i,j+1, 2);
+							}
+							if (get_map_value(map,i-1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i-1,j, 2);
+							}
+							if (get_map_value(map,i+1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
+							{
+								set_map_value (Map* map, i+1,j, 2);
+							}
+						
+						}
+					}
+					if (i == map->size)
+					{
+						if (j == map->size)
+						{
+							m=1;
+						}
+					}
+			
+				}
+			}
+		}
+	}
 int main(int argc, char** argv)
 {
 	create_empty_map(&map, 10);
