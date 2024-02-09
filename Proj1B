@@ -1,6 +1,7 @@
 #include "../head/map.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h> 
 
 Map map = {.map = NULL, .size = 0};
 
@@ -14,7 +15,7 @@ void create_empty_map (Map* map, int size)
 
 void set_map_value (Map* map, int x, int y, Color value)
 {
-	map -> map[x * map -> size + y]= value;
+	map -> map[y * map -> size + x]= value;
 }
 
 
@@ -32,8 +33,8 @@ void fill_map(Map* map)
 		}
 	}
 	
-	map->map[map->size* (map->size - 1)]=a;
-	map->map[map->size]=b;
+	set_map_value(map,map->size-1 , 0, a);
+	set_map_value(map, 0, map->size-1, b);
 }
 
 Color get_map_value (Map* map, int x, int y)
@@ -50,12 +51,12 @@ Color get_map_value (Map* map, int x, int y)
 
 void affiche_map(Map* map)
 {
-	for (int i=0; i <= map->size; i=i+1)
+	for (int i=0; i < map->size; i = i + 1)
 	{
-		for (int j=0; j <= map->size; j=j+1)
+		for (int j=0; j < map->size; j = j + 1)
 		{
 			if (get_map_value(map, i,j) == 1){
-			printf ("\033[150;01m1\033[00m");
+			printf ("\033[121;01m1\033[00m");
 			}
 			if (get_map_value(map, i,j) == 2){
 			printf ("\033[120;01m2\033[00m");
@@ -93,107 +94,220 @@ void affiche_map(Map* map)
 	}
 }
 
-//QUESTION 3
 
-void joue_un_coup(Map * map)
+
+
+
+int ia_random(Map * map, int numero_joueur)
 {
-	Char A;
-	Chat coup_joue;
-	int B;
-	int numero_joueur;
-	int m=0;
-	int k=0;
-	printf("Quel joueur êtes vous ?")
-	B = scanf("%d",&numero_joueur)
+	return rand()%7 + 3;
+}
 
-	printf("Quel coup voulez vous jouer ?")
-	A=scanf("%c",&coup_joue)
+
+int ia_random_mieux(Map * map, int numero_joueur)
+{
+	int tab[7];
+	int a=0;
+	
+	for (int k=0; k<7; k=k+1)
+	{
+		tab[k]=0;
+	}
+	
+	for (int i = 0; i < map->size; i= i + 1)
+	{
+		for (int j = 0; j < map->size; j = j + 1)
+		{
+				if (get_map_value(map,i,j) == numero_joueur)
+				{
+					if ((i>0) && (get_map_value(map,i-1,j) != 1) && (get_map_value(map,i-1,j) !=2 ))
+					{
+						tab[get_map_value(map,i-1,j) - 3] = get_map_value(map,i-1,j);
+						
+					}
+					
+					if ((j>0) && (get_map_value(map,i,j-1) !=1 ) && (get_map_value(map,i,j-1) !=2 ))
+					{
+						tab[get_map_value(map,i,j-1) - 3] = get_map_value(map,i,j-1);
+						
+					}
+					
+					if ((i < map->size - 1) && (get_map_value(map,i+1,j) !=1 ) && (get_map_value(map,i+1,j) !=2 ))
+					{
+						tab[get_map_value(map,i+1,j) - 3] = get_map_value(map,i+1,j);
+						
+					}
+					
+					if ((j < map->size - 1) && (get_map_value(map,i,j+1) !=1 ) && (get_map_value(map,i,j+1) !=2 ))
+					{
+						tab[get_map_value(map,i,j+1) - 3] = get_map_value(map,i,j+1);
+					
+					}
+				}
+		}
+	}
+	
+	
+	while(a == 0)
+	{
+		a = tab[rand()%7];
+	}
+	return a;
+	
+}
+	
+	
+	
+	
+void joue_un_coup(Map * map, int numero_joueur)
+{
+	int coup_joue;
+	int m=0;
+
+	if (numero_joueur == 1)
+	{
+		printf("Quel coup voulez vous jouer ?\n");
+		scanf("%d",&coup_joue);
+	}
+	
+	else 
+	{
+		coup_joue=ia_random_mieux(map,2);
+	}
+	
 	
 	while (m == 0)
 	{
-		while (k == 0)
+		m=1;
+		for (int i = 0; i < map->size; i = i + 1)
 		{
-			for (int i = 0; i <= map->size;i=i+1)
+			for (int j = 0; j < map->size; j = j + 1)
 			{
-				for (int j = 0; j<= map->size; j=j+1)
+				
+				if (get_map_value(map,i,j) == numero_joueur)
 				{
-					if B==1
+					if ((j>0) && (get_map_value(map,i,j-1) == coup_joue))
 					{
-		
-						if (get_map_value(map,i,j) == 1)
-						{
-							if (get_map_value(map,i,j-1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i,j-1, 1);
-								k=1;
-							}	
-							if (get_map_value(map,i,j+1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i,j+1, 1);
-								k=1;
-							}
-							if (get_map_value(map,i-1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i-1,j, 1);
-								k=1;
-							}
-							if (get_map_value(map,i+1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i+1,j, 1);
-								k=1;
-							}
+						set_map_value (map, i,j-1, numero_joueur);
+						m=0;
+					}	
 						
-						}
-					}
-		
-					if B==2
+					
+					if ((j < map->size - 1) && (get_map_value(map,i,j+1) == coup_joue))
 					{
-		
-						if (get_map_value(map,i,j) == 2)
-						{
-							if (get_map_value(map,i,j-1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i,j-1, 2);
-							}	
-							if (get_map_value(map,i,j+1)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i,j+1, 2);
-							}
-							if (get_map_value(map,i-1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i-1,j, 2);
-							}
-							if (get_map_value(map,i+1,j)) == // METTRE LA COLOR VALUE DE COUP_JOUE//
-							{
-								set_map_value (Map* map, i+1,j, 2);
-							}
-						
-						}
+						set_map_value (map, i,j+1, numero_joueur);
+						m=0;
 					}
-					if (i == map->size)
+							
+							
+					if ((i>0) && (get_map_value(map,i-1,j) == coup_joue))
 					{
-						if (j == map->size)
-						{
-							m=1;
-						}
+						set_map_value (map, i-1,j, numero_joueur);
+						m=0;
 					}
-			
-				}
+								
+					if ((i<map->size - 1) && (get_map_value(map,i+1,j) == coup_joue))
+					{
+						set_map_value (map, i+1,j, numero_joueur);
+						m=0;
+					}
+							
+					
+				}		
 			}
 		}
 	}
-int main(int argc, char** argv)
-{
-	create_empty_map(&map, 10);
-	fill_map(&map);
-	affiche_map(&map);
-	
+	affiche_map(map);
 }
 
 
 
 
 
+int fin_du_jeu(Map * map)
+{
+	int a = 0;
+	int b = 0;
+	for (int i = 0; i < map->size; i=i+1)
+	{
+		for (int j = 0; j<map->size; j=j+1)
+		{
+			if (get_map_value(map,i,j) == 1)
+			{
+				a=a+1;
+			}
+			
+			
+			if (get_map_value(map,i,j) == 2)
+			{
+				b=b+1;
+			}
+		}
+	}
+	
+	
+	
+	if (a >= floor((map->size * map->size)/2))
+	{
+		return 1;
+	}
+	
+	
+	
+	if (b >= floor((map->size * map-> size)/2))
+	{
+		return 2;
+	}
+	
+	
+	return 0;
+}
+	
+
+void Jouons(Map * map)
+{
+	int a = 0;
+	affiche_map(map);
+	while (fin_du_jeu(map)==0)
+	{
+		if (a % 2 == 0)
+		{	
+			printf("Joueur 1, à votre tour !\n");
+			joue_un_coup(map, 1);
+		}
+		
+		if (a % 2 == 1)
+		{
+			printf("Joueur 2, à votre tour !\n");
+			joue_un_coup(map, 2);
+		}
+		a = a + 1;
+	}		
+	
+	if (fin_du_jeu(map) == 1)
+	{
+		printf("Bravo joueur 1, tu as défoncé joueur 2 !!\n");
+	}
+	
+	if (fin_du_jeu(map) == 2)
+	{
+		printf("Bravo joueur 2, tu as défoncé joueur 1 !!\n");
+	}		
+}
+
+
+
+	 
+
+
+
+int main(int argc, char** argv)
+{
+	create_empty_map(&map, 5);
+	fill_map(&map);
+	Jouons(&map);
+	
+}
 
 
 
