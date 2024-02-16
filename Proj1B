@@ -97,7 +97,18 @@ void affiche_map(Map* map)
 
 int simule_un_coup (Map * map, int couleur_teste)
 {
-	Map map2 = map;
+	Map map2 = {.map = NULL, .size = 0};
+	create_empty_map (&map2, map->size);
+	
+	for (int i = 0; i < map->size; i=i+1)
+	{
+		for (int j = 0; j < map->size; j=j+1)
+		{
+			set_map_value (&map2, i, j, get_map_value(map,i,j) );
+		}
+	}
+	
+	
 	int coup_joue;
 	int m=0;
 	int compteur = 0;
@@ -106,39 +117,39 @@ int simule_un_coup (Map * map, int couleur_teste)
 	while (m == 0)
 	{
 		m=1;
-		for (int i = 0; i < map2->size; i = i + 1)
+		for (int i = 0; i < map -> size; i = i + 1)
 		{
-			for (int j = 0; j < map2->size; j = j + 1)
+			for (int j = 0; j < map->size; j = j + 1)
 			{
 				
-				if (get_map_value(map2,i,j) == 2)
+				if (get_map_value(&map2,i,j) == 2)
 				{
-					if ((j>0) && (get_map_value(map2,i,j-1) == coup_joue))
+					if ((j>0) && (get_map_value(&map2,i,j-1) == coup_joue))
 					{
-						set_map_value (map2, i,j-1, 2);
+						set_map_value (&map2, i,j-1, 2);
 						m=0;
 						compteur = compteur + 1; 
 					}	
 						
 					
-					if ((j < map->size - 1) && (get_map_value(map2,i,j+1) == coup_joue))
+					if ((j < map->size - 1) && (get_map_value(&map2,i,j+1) == coup_joue))
 					{
-						set_map_value (map2, i,j+1, 2);
+						set_map_value (&map2, i,j+1, 2);
 						m=0;
 						compteur = compteur + 1; 
 					}
 							
 							
-					if ((i>0) && (get_map_value(map2,i-1,j) == coup_joue))
+					if ((i>0) && (get_map_value(&map2,i-1,j) == coup_joue))
 					{
-						set_map_value (map2, i-1,j, 2);
+						set_map_value (&map2, i-1,j, 2);
 						m=0;
 						compteur = compteur + 1; 
 					}
 								
-					if ((i<map->size - 1) && (get_map_value(map2,i+1,j) == coup_joue))
+					if ((i<map->size - 1) && (get_map_value(&map2,i+1,j) == coup_joue))
 					{
-						set_map_value (map2, i+1,j, 2);
+						set_map_value (&map2, i+1,j, 2);
 						m=0;
 						compteur = compteur + 1; 
 					}
@@ -148,6 +159,9 @@ int simule_un_coup (Map * map, int couleur_teste)
 			}
 		}
 	}
+	
+	//free(&map2);
+
 	return compteur;
 }
 
@@ -223,15 +237,15 @@ int ia_glouton(Map * map)
 	int b = 0;
 
 
-	for (int i = 3; i < 10; i = i + 1)
+	for (int i = 0; i < 7; i = i + 1)
 	{
-		tab1[i] = i;
+		tab1[i] = i+3;
 		tab2[i] = 0;
 	}
 
 	for (int k = 0; k < 7; k = k + 1)
 	{
-		tab2[k] = simule_un_coup(map ,tab[k]);
+		tab2[k] = simule_un_coup(map ,tab1[k]);
 	}
 
 	for (int k = 0; k < 7; k = k + 1)
@@ -262,6 +276,7 @@ void joue_un_coup(Map * map, int numero_joueur)
 	else 
 	{
 		coup_joue=ia_glouton(map);
+		
 	}
 	
 	
@@ -386,9 +401,6 @@ void Jouons(Map * map)
 
 
 
-	 
-
-
 
 int main(int argc, char** argv)
 {
@@ -397,12 +409,5 @@ int main(int argc, char** argv)
 	Jouons(&map);
 	
 }
-
-
-
-
-
-
-
 
 
