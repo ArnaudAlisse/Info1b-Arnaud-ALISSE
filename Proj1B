@@ -56,10 +56,10 @@ void affiche_map(Map* map)
 		for (int j=0; j < map->size; j = j + 1)
 		{
 			if (get_map_value(map, i,j) == 1){
-			printf ("\033[121;01m1\033[00m");
+			printf ("\033[95;01m1\033[00m");
 			}
 			if (get_map_value(map, i,j) == 2){
-			printf ("\033[120;01m2\033[00m");
+			printf ("\033[94;01m2\033[00m");
 			}
 			if (get_map_value(map, i,j) == 3){
 			printf ("\033[31;01mR\033[00m");
@@ -95,9 +95,20 @@ void affiche_map(Map* map)
 }
 
 
-int simule_un_coup (Map * map, int couleur_teste)
+int simule_un_coup (Map * map, int couleur_teste, int numero_joueur)
 {
-	Map map2 = map;
+	Map map2 = {.map = NULL, .size = 0};
+	create_empty_map (&map2, map->size);
+	
+	for (int i = 0; i < map->size; i=i+1)
+	{
+		for (int j = 0; j < map->size; j=j+1)
+		{
+			set_map_value (&map2, i, j, get_map_value(map,i,j) );
+		}
+	}
+	
+	
 	int coup_joue;
 	int m=0;
 	int compteur = 0;
@@ -106,39 +117,39 @@ int simule_un_coup (Map * map, int couleur_teste)
 	while (m == 0)
 	{
 		m=1;
-		for (int i = 0; i < map2->size; i = i + 1)
+		for (int i = 0; i < map -> size; i = i + 1)
 		{
-			for (int j = 0; j < map2->size; j = j + 1)
+			for (int j = 0; j < map->size; j = j + 1)
 			{
 				
-				if (get_map_value(map2,i,j) == 2)
+				if (get_map_value(&map2,i,j) == numero_joueur)
 				{
-					if ((j>0) && (get_map_value(map2,i,j-1) == coup_joue))
+					if ((j>0) && (get_map_value(&map2,i,j-1) == coup_joue))
 					{
-						set_map_value (map2, i,j-1, 2);
+						set_map_value (&map2, i,j-1, numero_joueur);
 						m=0;
 						compteur = compteur + 1; 
 					}	
 						
 					
-					if ((j < map->size - 1) && (get_map_value(map2,i,j+1) == coup_joue))
+					if ((j < map->size - 1) && (get_map_value(&map2,i,j+1) == coup_joue))
 					{
-						set_map_value (map2, i,j+1, 2);
+						set_map_value (&map2, i,j+1, numero_joueur);
 						m=0;
 						compteur = compteur + 1; 
 					}
 							
 							
-					if ((i>0) && (get_map_value(map2,i-1,j) == coup_joue))
+					if ((i>0) && (get_map_value(&map2,i-1,j) == coup_joue))
 					{
-						set_map_value (map2, i-1,j, 2);
+						set_map_value (&map2, i-1,j, numero_joueur);
 						m=0;
 						compteur = compteur + 1; 
 					}
 								
-					if ((i<map->size - 1) && (get_map_value(map2,i+1,j) == coup_joue))
+					if ((i<map->size - 1) && (get_map_value(&map2,i+1,j) == coup_joue))
 					{
-						set_map_value (map2, i+1,j, 2);
+						set_map_value (&map2, i+1,j, numero_joueur);
 						m=0;
 						compteur = compteur + 1; 
 					}
@@ -148,10 +159,107 @@ int simule_un_coup (Map * map, int couleur_teste)
 			}
 		}
 	}
+	
+	//free(&map2);
+
 	return compteur;
 }
 
 
+int simule_deux_coups (Map * map, int couleur_teste, int numero_joueur)
+{
+	Map map2 = {.map = NULL, .size = 0};
+	create_empty_map (&map2, map->size);
+	
+	
+	
+	
+	int tab1[7];
+	int tab2[7];
+	int coup_joue;
+	int m=0;
+	int compteur1 = 0;
+	int compteur2 = 0;
+	int max=0;
+	coup_joue=couleur_teste;
+	
+	for (int i = 0; i < map->size; i=i+1)
+	{
+		for (int j = 0; j < map->size; j=j+1)
+		{
+			set_map_value (&map2, i, j, get_map_value(map,i,j) );
+		}
+	}
+	
+	for (int k=0; k<7; k=k+1)
+	{
+		tab1[k]=k+3;
+		tab2[k]=0;
+	}
+	
+	
+	
+	while (m == 0)
+	{
+		m=1;
+		for (int i = 0; i < map -> size; i = i + 1)
+		{
+			for (int j = 0; j < map->size; j = j + 1)
+			{
+				
+				if (get_map_value(&map2,i,j) == numero_joueur)
+				{
+					if ((j>0) && (get_map_value(&map2,i,j-1) == coup_joue))
+					{
+						set_map_value (&map2, i,j-1, numero_joueur);
+						m=0;
+						compteur1 = compteur1 + 1;					
+					}	
+						
+					
+					if ((j < map->size - 1) && (get_map_value(&map2,i,j+1) == coup_joue))
+					{
+						set_map_value (&map2, i,j+1, numero_joueur);
+						m=0;
+						compteur1 = compteur1 + 1;
+					}
+							
+							
+					if ((i>0) && (get_map_value(&map2,i-1,j) == coup_joue))
+					{
+						set_map_value (&map2, i-1,j, numero_joueur);
+						m=0;
+						compteur1 = compteur1 + 1;
+					}
+								
+					if ((i<map->size - 1) && (get_map_value(&map2,i+1,j) == coup_joue))
+					{
+						set_map_value (&map2, i+1,j, numero_joueur);
+						m=0;
+						compteur1 = compteur1 + 1;
+					}
+				}		
+			}
+		}
+	}
+	
+	for (int k=0; k < 7; k = k + 1)
+	{
+		compteur2 = simule_un_coup(&map2, tab1[k], numero_joueur);
+		tab2[k]=compteur2;
+	}
+	
+	for (int k = 0; k < 7; k = k + 1)
+	{
+		if (max<tab2[k])
+		{
+			max=tab2[k];
+		}
+	}
+	//free(&map2);
+
+	return compteur1 + max;
+}
 
 
 
@@ -215,7 +323,7 @@ int ia_random_mieux(Map * map, int numero_joueur)
 	
 	
 	
-int ia_glouton(Map * map)
+int ia_glouton(Map * map, int numero_joueur)
 {
 	int tab1[7];
 	int tab2[7];
@@ -223,15 +331,15 @@ int ia_glouton(Map * map)
 	int b = 0;
 
 
-	for (int i = 3; i < 10; i = i + 1)
+	for (int i = 0; i < 7; i = i + 1)
 	{
-		tab1[i] = i;
+		tab1[i] = i + 3;
 		tab2[i] = 0;
 	}
 
 	for (int k = 0; k < 7; k = k + 1)
 	{
-		tab2[k] = simule_un_coup(map ,tab[k]);
+		tab2[k] = simule_un_coup(map ,tab1[k], numero_joueur);
 	}
 
 	for (int k = 0; k < 7; k = k + 1)
@@ -248,20 +356,97 @@ int ia_glouton(Map * map)
 }	
 	
 	
-void joue_un_coup(Map * map, int numero_joueur)
+
+int ia_glouton_2(Map * map, int numero_joueur)
+{
+	int tab1[7];
+	int tab2[7];
+	int a = 0;
+	int b = 0;
+
+
+	for (int i = 0; i < 7; i = i + 1)
+	{
+		tab1[i] = i + 3;
+		tab2[i] = 0;
+	}
+
+	for (int k = 0; k < 7; k = k + 1)
+	{
+		tab2[k] = simule_deux_coups(map ,tab1[k], numero_joueur);
+	}
+
+	for (int k = 0; k < 7; k = k + 1)
+	{
+		if (a < tab2[k])
+		{
+			a = tab2[k];
+			b = k;
+		}
+	}
+
+	return b + 3;
+		
+}
+
+
+
+
+void joue_un_coup(Map * map, int numero_joueur, int type_joueur)
 {
 	int coup_joue;
 	int m=0;
 
 	if (numero_joueur == 1)
 	{
-		printf("Quel coup voulez vous jouer ?\n");
-		scanf("%d",&coup_joue);
+		if (type_joueur == 1) 
+		{
+			printf("Quel coup voulez vous jouer ?\n");
+			scanf("%d",&coup_joue);
+		}
+		
+		if (type_joueur == 2) 
+		{
+			coup_joue=ia_random(map,1);
+		}
+		if (type_joueur == 3) 
+		{
+			coup_joue=ia_random_mieux(map,1);
+		}
+		if (type_joueur == 4) 
+		{
+			coup_joue=ia_glouton(map,1);
+		}
+		if (type_joueur == 5) 
+		{
+			coup_joue=ia_glouton_2(map,1);
+		}
 	}
 	
 	else 
 	{
-		coup_joue=ia_glouton(map);
+		if (type_joueur == 1) 
+		{
+			printf("Quel coup voulez vous jouer ?\n");
+			scanf("%d",&coup_joue);
+		}
+		
+		if (type_joueur == 2) 
+		{
+			coup_joue=ia_random(map,2);
+		}
+		if (type_joueur == 3) 
+		{
+			coup_joue=ia_random_mieux(map,2);
+		}
+		if (type_joueur == 4) 
+		{
+			coup_joue=ia_glouton(map,2);
+		}
+		if (type_joueur == 5) 
+		{
+			coup_joue=ia_glouton_2(map,2);
+		}
 	}
 	
 	
@@ -306,7 +491,9 @@ void joue_un_coup(Map * map, int numero_joueur)
 			}
 		}
 	}
+	printf("\n");
 	affiche_map(map);
+	
 }
 
 
@@ -353,22 +540,46 @@ int fin_du_jeu(Map * map)
 }
 	
 
-void Jouons(Map * map)
+int Jouons(Map * map)
 {
 	int a = 0;
+	int b = 0;
+	int c = 0;
+	
+	
+	printf("Qui sera le joueur 1 ?\n");
+	printf("Vrai joueur = 1 \n");
+	printf("IA random = 2 \n");
+	printf("IA random_mieux = 3 \n");
+	printf("IA gloutonne = 4 \n");
+	printf("IA gloutonne_2 = 5 \n");
+	scanf("%d",&b);
+	
+	
+	printf("Qui sera le joueur 2 ?\n");
+	printf("Vrai joueur = 1 \n");
+	printf("IA random = 2 \n");
+	printf("IA random_mieux = 3 \n");
+	printf("IA gloutonne = 4 \n");
+	printf("IA gloutonne_2 = 5 \n");
+	scanf("%d",&c);
+	
+	
+	
+	
 	affiche_map(map);
 	while (fin_du_jeu(map)==0)
 	{
 		if (a % 2 == 0)
 		{	
 			printf("Joueur 1, à votre tour !\n");
-			joue_un_coup(map, 1);
+			joue_un_coup(map, 1, b);
 		}
 		
 		if (a % 2 == 1)
 		{
 			printf("Joueur 2, à votre tour !\n");
-			joue_un_coup(map, 2);
+			joue_un_coup(map, 2, c);
 		}
 		a = a + 1;
 	}		
@@ -376,27 +587,49 @@ void Jouons(Map * map)
 	if (fin_du_jeu(map) == 1)
 	{
 		printf("Bravo joueur 1, tu as défoncé joueur 2 !!\n");
+		return 1;
 	}
 	
 	if (fin_du_jeu(map) == 2)
 	{
 		printf("Bravo joueur 2, tu as défoncé joueur 1 !!\n");
-	}		
+		return 2;
+	}
+	
+	return 0;		
 }
-
 
 
 	 
-
-
+void simulation_parties(Map * map, int N)
+{
+	int a = 0;
+	int b = 0;
+	for (int i = 0; i < N; i=i+1)
+	{
+		if (Jouons(map) == 1)
+		{
+			a=a+1;
+		}
+		else
+		{
+			b=b+1;
+		}
+	}
+	printf("L'IA 1 à gagné %d parties \n", a);
+	printf("L'IA 2 à gagné %d parties \n", b);
+}
 
 int main(int argc, char** argv)
 {
-	create_empty_map(&map, 5);
+	create_empty_map(&map, 30);
 	fill_map(&map);
 	Jouons(&map);
+	//simulation_parties(&map, 600);
 	
 }
+
+
 
 
 
